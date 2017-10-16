@@ -4,12 +4,10 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+Project Weldr is rethinking how we make ready-to-use OS images.
 
-### More Information
+Find us on [github] or [#weldr] on the [Freenode] IRC network.
 
-A place to include any other types of information that you'd like to include about yourself.
-
-### Contact me
-
-[email@domain.com](mailto:email@domain.com)
+[github]: https://github.com/weldr/
+[#weldr]: http://webchat.freenode.net?channels=%23weldr&uio=d4
+[Freenode]: https://freenode.net/

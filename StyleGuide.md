@@ -2,6 +2,16 @@
 
 Notes for weldrists writing for weldr.io.
 
+## Testing locally
+
+See README.md as well, but here's the quick version:
+
+    sudo dnf install rubygem-bundler ruby-devel
+    bundle install
+    bundle exec jekyll serve
+
+...then just open http://localhost:4000/ and you're off.
+
 ## Author info
 
 Add a page for yourself in `_authors/`, like so:

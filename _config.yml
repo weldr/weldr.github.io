@@ -72,6 +72,10 @@ kramdown:
 sass:
   style: :expanded # You might prefer to minify using :compressed
 
+# Here's where we're keeping author information
+collections:
+  - authors
+
 # Use the following plug-ins
 plugins:
   - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
@@ -84,5 +88,6 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+  - StyleGuide.md
 
 theme: jekyll-theme-hacker

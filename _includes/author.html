@@ -1,0 +1,6 @@
+{% assign author = site.authors | where:"userid", page.author | first %}
+{% if author %}
+<span>Written by {{author.name}}</span>
+{% else %}
+<span>Written by Team Weldr</span>
+{% endif %}

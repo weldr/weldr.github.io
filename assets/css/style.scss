@@ -1,0 +1,13 @@
+---
+---
+
+// main site theme
+@import "{{ site.theme }}";
+
+// added stuff from _sass
+@import "variables";
+@import "svg-icons";
+
+// custom bits
+.date { font-style: italic; color: $gray; }
+

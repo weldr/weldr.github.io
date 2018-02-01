@@ -11,3 +11,7 @@
 // custom bits
 .date { font-style: italic; color: $gray; }
 
+// theme overrides
+.container {
+    max-width: 90%;
+}

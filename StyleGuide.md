@@ -6,7 +6,7 @@ Notes for weldrists writing for weldr.io.
 
 See README.md as well, but here's the quick version:
 
-    sudo dnf install rubygem-bundler ruby-devel
+    sudo dnf install rubygem-bundler ruby-devel kernel-headers
     bundle install
     bundle exec jekyll serve
 

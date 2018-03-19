@@ -124,7 +124,7 @@ Coming next: RPM package names!
 [mirrormanager]: https://fedoraproject.org/wiki/Infrastructure/MirrorManager
 [mock]: https://github.com/rpm-software-management/mock/wiki
 [yum]: https://en.wikipedia.org/wiki/Yellow_Dog_Updater,_Modified
-[livemedia-creator]: https://rhinstaller.github.io/lorax/livemedia-creator.html
+[livemedia-creator]: https://weldr.io/lorax/livemedia-creator.html
 [bodhi]: https://fedoraproject.org/wiki/Bodhi
 [comps.xml]: https://fedoraproject.org/wiki/How_to_use_and_edit_comps.xml_for_package_groups
 [pkgdb]: https://admin.fedoraproject.org/pkgdb

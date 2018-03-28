@@ -1,0 +1,80 @@
+{% comment %}
+Include this to render some CSV data into a static, sortable HTML table.
+
+Example:
+
+  {% capture csvdata %}
+  word,count,prefix,suffix,meaning
+  devel,4407,0,4407,file type
+  [...]
+  {% endcapture %}
+  {% include csvtable.html data=csvdata %}
+
+Or, if you have some data without quotes:
+
+  {% include csvtable.html
+     height="480px"
+     data="
+
+  word,count,prefix,suffix,meaning
+  devel,4407,0,4407,file-type
+
+  " %}
+
+
+Required parameters:
+
+  data=var        csv data to render
+
+Optional parameters:
+
+  sort=false      do not make the table sortable
+  limit=NUM       only use the first NUM rows of data
+  height="SIZE"   put the table in a scrollable <div> with "height: SIZE;"
+  tableid="ID"    set "id=ID" on the enclosing <table> (default: "csvtable")
+  caption="STR"   add a caption/header to the table
+
+FIXME: handle quoting in CSV
+TODO: show sort arrows on sortable columns
+TOOD: restrict which columns to sort
+TODO: pagination and searching
+TODO: link to static CSV file
+{% endcomment %}
+{% assign rows = include.data | strip | newline_to_br | split: '<br />' %}
+{% assign columns = rows | first | split: ',' %}
+{% capture tableid %}{{ include.tableid | default: "csvtable" }}{% endcapture %}
+{% if include.limit > 0 %}{% assign limit = include.limit %}{% endif %}
+<div id="{{ tableid }}-wrap" style="height: {{ include.height | default: "auto" }}; overflow: auto;">
+<table id="{{ tableid }}">
+  <caption>{{ include.caption }}</caption>
+  <thead>
+    <tr>
+    {%- for colname in columns -%}
+    <th><span class="sort" data-sort="{{ colname }}">{{ colname }}</span></th>
+    {%- endfor -%}
+    </tr>
+  </thead>
+  <tbody class="list">
+      {% for row in rows offset:1 limit:{{limit}} %}{% assign items = row | split: ',' %}
+      <tr>
+        {%- for item in items -%}
+        <td class="{{ columns[forloop.index0] }}">{{- item | strip -}}</td>
+        {%- endfor -%}
+      </tr>
+    {%- endfor -%}
+  </tbody>
+{% unless include.sort == false %}
+<style>
+.sort { cursor: pointer; }
+</style>
+<script src="{{ "/assets/js/list.min.js" | relative_url }}"></script>
+<script>
+var options = {
+  valueNames: {{ columns | jsonify }},
+  indexAsync: true
+};
+var tableList = new List("{{ tableid }}", options);
+</script>
+{% endunless %}
+</table>
+</div>

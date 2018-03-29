@@ -85,10 +85,10 @@ and suffixes: `rubygem-`, `python3-`, `compat-`, `-debug`, `-devel`.
 
 So! Let's take a swing at that first question from [the intro]:
 
-## What are RPM names actually trying to do?
+## What's this actually trying to _do_?
 
-To try to figure out what people are trying to do with RPM names, I took a
-look at the most common "words" in package names.
+To try to figure out what things people are _actually_ trying to accomplish
+with ever-longer RPM names, let's look at the most commonly-used "words".
 
 If you're on a Fedora system and you'd like to play along, here's a one-liner
 that'll generate a list of words, sorted by number of occurrences:
@@ -98,252 +98,267 @@ dnf repoquery --qf '%{NAME}' --repo="fedora" --repo="updates" \
     | tr '-' '\n' | sort | uniq -c | sort -n | tac | less
 ```
 
-I wrote a [little script] to do slightly fancier analysis of the words in RPM
-names - keeping word pairs like "`apache-commons`" as a single word, counting
-use as prefix or suffix, and categorizing each "word" based on what kind of
-thing they indicate about the package. Here's the results from that:
+I also wrote a [little script] to do slightly fancier analysis of the words in
+RPM names - keeping word pairs like "`apache-commons`" as a single word,
+counting each word's use as a prefix, as a suffix, and per-specfile[^4], and
+labeling the "meaning" of common words.
+
+Here's the results from that:
 
 {% capture csvdata %}
-word,pkgs,prefix,suffix,meaning
-devel,4407,0,4398,file-type
-perl,2953,2898,58,package prefix
-python3,1856,1819,39,build-variant
-doc,1703,0,1700,file-type
-python2,1536,1520,12,build-variant
-javadoc,1241,0,1241,file-type
-nodejs,1129,1129,0,package prefix
-python,1069,934,118,programming language
-rubygem,635,635,0,package prefix
-php,620,611,10,programming language
-golang,465,464,0,package prefix
-github,444,0,1,
-libs,436,0,435,file-type
-ghc,430,430,1,package prefix
-unit-test,413,0,188,file-purpose
-common,327,1,297,core/extras
-fonts,323,2,318,file-type
-tools,303,0,296,file-purpose
-plugin,290,0,227,extends/enhances
-static,264,0,262,build-variant
-mingw32,229,229,0,build-variant
-mingw64,217,217,0,build-variant
-utils,196,0,193,file-purpose
-Test,193,0,10,
-data,164,0,144,file-type
-gnome,164,107,53,environment
-java,155,29,101,programming language
-client,153,0,137,file-purpose
-maven,148,91,2,framework
-R,147,144,3,programming language
-server,144,0,129,file-purpose
-docs,141,0,138,file-type
-core,139,0,126,core/extras
-api,138,1,120,file-purpose
-go,137,5,6,programming language
-tests,136,0,134,file-purpose
-rust,132,132,0,programming language
-plugins,128,0,78,extends/enhances
-hunspell,126,125,1,project name
-kf5,126,125,1,framework
-examples,125,0,124,file-purpose
-qt5,117,43,50,framework
-horde,112,0,2,project name
-erlang,111,110,1,programming language
-ocaml,105,101,4,programming language
-Net,105,0,0,
-parent,102,0,97,file-type
-theme,101,0,75,file-type
-Horde,100,0,0,
-drupal7,99,99,0,project name
-Plugin,95,0,3,
-gtk,88,15,60,framework
-Class,88,0,10,
-Text,84,0,1,
-File,83,0,5,
-zendframework,80,0,1,framework
-gui,79,0,75,file-purpose
-jboss,79,74,2,project name
-qt,76,10,61,framework
-test,76,1,47,file-purpose
-eclipse,76,74,1,project name
-zend,76,0,0,framework
-cli,75,1,62,file-purpose
-Module,75,0,2,
-MooseX,75,0,0,
-django,72,0,3,framework
-XML,71,0,6,data format
-sugar,71,69,2,environment
-is,70,1,14,
-kde,69,22,33,environment
-Data,68,0,4,
-HTML,68,0,6,data format
-base,67,0,59,core/extras
-compat,67,20,42,build-variant
-ruby,65,31,25,programming language
-config,63,0,41,file-type
-php-pear,62,61,0,package prefix
-mysql,61,6,53,framework
-Simple,61,1,47,
-globus,60,58,2,project name
-js,60,43,15,programming language
-lua,58,39,16,programming language
-CGI,58,0,2,
-http,56,2,19,protocol
-hyphen,56,55,1,
-json,55,7,24,data format
-Crypt,55,0,1,
-Devel,54,0,1,
-extras,53,0,39,core/extras
-openmpi,52,1,51,framework
-Catalyst,52,0,2,
-emacs,51,39,12,project name
-gap-pkg,51,51,0,package prefix
-lib,50,0,42,file-type
-mpich,50,1,49,framework
-xfce4,50,49,0,environment
-fedora,49,33,12,vendor
-trytond,49,49,0,project name
-HTTP,48,0,7,
-php-pecl,48,48,0,package prefix
-aspell,46,44,2,project name
-util,44,0,25,file-purpose
-filesystem,43,0,41,file-type
-web,43,1,33,file-purpose
-xorg-x11,41,41,0,project name
-git,40,22,11,framework
-stream,40,1,28,concept
-manager,40,0,26,file-purpose
-apache-commons,39,39,0,project name
-mate,38,25,13,environment
-cache,38,0,28,file-purpose
-octave,37,33,3,programming language
-tcl,37,23,14,programming language
-xml,37,7,22,data format
-glib,36,2,33,framework
-ldap,36,0,31,protocol
-file,36,2,18,concept
-demo,35,0,35,file-purpose
-el,35,0,32,data format
-postgresql,35,8,27,framework
-system,34,16,5,concept
-console,34,3,21,file-purpose
-trac,33,31,1,framework
-gnome-shell,33,31,1,project name
-jenkins,33,30,2,project name
-vim,33,22,10,project name
-mono,33,13,2,programming language
-google,33,13,1,vendor
-Tiny,32,0,32,
-extra,32,1,25,core/extras
-XS,31,0,29,
-gtk3,31,1,23,framework
-lv2,30,29,1,framework
-backgrounds,30,0,29,file-type
-selinux,30,1,29,framework
-sqlite,30,2,27,framework
-gtk2,30,2,21,framework
-ibus,29,28,0,framework
-agent,29,0,22,file-purpose
-c,29,2,20,programming language
-glassfish,28,27,0,project name
-parser,28,0,26,file-purpose
-it,28,0,25,translation
-Parser,28,0,22,
-dbus,28,9,17,framework
-mythes,27,27,0,file-type
-manual,27,0,26,file-purpose
-qt4,27,3,24,framework
-runtime,27,0,24,file-purpose
-log,26,0,19,file-purpose
-plexus,25,23,2,project name
-gimp,25,21,4,project name
-plasma,25,20,2,framework
-es,25,0,22,translation
-driver,25,0,19,extends/enhances
-gfs,24,24,0,
-platform,24,18,5,
-fr,24,0,24,translation
-sharp,24,0,22,programming language
-de,24,0,22,translation
-extensions,24,0,21,extends/enhances
-xstatic,23,23,0,
-xfce,23,2,19,environment
-generator,23,0,18,
-info,23,0,17,file-type
-nuvola,22,22,0,
-daemon,22,0,21,file-purpose
-modules,22,0,20,extends/enhances
-debug,22,0,18,build-variant
-coin-or,21,21,0,project name
-felix,21,21,0,project name
-glite,21,21,0,project name
-pidgin,21,19,2,
-jackson,21,18,1,project name
-fuse,21,11,9,
-ru,21,0,20,translation
-cs,21,0,19,translation
-support,21,0,19,
-c++,21,1,17,programming language
-sblim,20,20,0,project name
-vdr,20,20,0,
-gstreamer,20,9,7,
-pgsql,20,0,20,framework
-ng,20,0,19,
-i18n,20,0,18,translation
-fcitx,19,17,2,
-pom,19,0,19,
-builder,19,0,18,
-lxqt,18,18,0,environment
-apache,18,11,6,
-demos,18,0,17,
-geronimo,17,17,0,project name
-ladspa,15,15,0,
-springframework,15,15,0,project name
-telepathy,15,13,2,
-nagios,15,11,3,project name
-adobe,13,13,0,
-switchboard,13,13,0,
-jetty,13,13,0,project name
-lohit,13,13,0,
-NetworkManager,13,12,0,project name
-scim,13,12,1,
-sil,12,12,0,
-cinnamon,12,11,1,
-vagrant,12,10,2,
-man-pages,12,10,0,project name
-gdouros,11,11,0,
-ktp,11,11,0,
-purple,11,11,0,
-libopensync,11,11,0,
-wingpanel,10,10,0,
-aries,10,10,0,
-oflb,10,10,0,
+word,specfiles,rpms,as prefix,as suffix,meaning
+devel,4410,5290,0,5197,file-type
+perl,2953,3140,3073,61,package prefix
+python3,1855,2053,2004,42,build-variant
+doc,1704,4646,0,4615,file-type
+python2,1536,1731,1699,12,build-variant
+javadoc,1241,1253,0,1243,file-type
+nodejs,1129,1399,1398,0,package prefix
+python,1069,1210,1043,125,programming language
+rubygem,635,1261,1261,0,package prefix
+php,620,861,825,10,programming language
+golang,465,951,919,0,package prefix
+github,444,838,0,1,
+libs,436,523,0,479,file-type
+ghc,433,1055,1044,1,package prefix
+unit-test,413,414,0,189,file-purpose
+common,327,374,1,309,core/extras
+fonts,323,845,4,750,file-type
+tools,303,413,0,321,file-purpose
+plugin,290,725,0,264,extends/enhances
+static,264,417,0,413,build-variant
+mingw32,229,392,392,0,build-variant
+mingw64,217,377,377,0,build-variant
+utils,196,264,0,205,file-purpose
+Test,193,195,0,10,
+gnome,164,240,165,67,environment
+data,164,218,0,146,file-type
+java,155,411,81,104,programming language
+client,153,285,0,170,file-purpose
+maven,148,349,256,4,framework
+R,147,174,170,3,programming language
+server,144,222,0,142,file-purpose
+docs,141,160,0,141,file-type
+core,139,243,0,158,core/extras
+api,138,267,1,144,file-purpose
+go,137,250,5,6,programming language
+tests,136,173,0,170,file-purpose
+rust,132,139,137,0,programming language
+plugins,128,376,0,87,extends/enhances
+hunspell,126,135,128,2,project name
+kf5,126,278,277,1,framework
+examples,125,142,0,132,file-purpose
+qt5,117,358,159,60,framework
+horde,112,114,0,2,project name
+erlang,111,163,161,1,programming language
+Net,105,106,0,0,
+ocaml,105,216,209,4,programming language
+parent,102,121,0,116,file-type
+theme,101,150,0,99,file-type
+Horde,100,100,0,0,
+drupal7,99,100,99,0,project name
+Plugin,95,107,0,3,
+gtk,88,141,28,62,framework
+Class,88,88,0,10,
+Text,84,86,0,1,
+File,83,84,0,5,
+zendframework,80,80,0,1,framework
+jboss,79,156,147,3,project name
+gui,79,91,0,77,file-purpose
+test,77,101,2,50,file-purpose
+zend,76,76,0,0,framework
+qt,76,176,48,71,framework
+eclipse,76,213,210,1,project name
+cli,75,97,2,67,file-purpose
+Module,75,76,0,2,
+MooseX,75,79,0,0,
+django,72,150,0,6,framework
+sugar,71,85,82,2,environment
+XML,71,72,0,6,data format
+is,70,71,2,14,
+kde,69,194,130,47,environment
+Data,68,68,0,4,
+HTML,68,70,0,6,data format
+base,67,131,0,85,core/extras
+compat,67,108,45,43,build-variant
+ruby,65,99,55,25,programming language
+config,63,88,0,46,file-type
+php-pear,62,62,61,0,package prefix
+mysql,61,90,11,62,framework
+Simple,61,63,2,47,
+js,60,73,45,15,programming language
+globus,60,150,148,2,project name
+lua,58,89,60,16,programming language
+CGI,58,58,0,2,
+hyphen,56,125,58,1,
+http,56,102,4,20,protocol
+json,56,75,15,24,data format
+Crypt,55,56,0,1,
+Devel,54,66,0,1,
+extras,53,115,0,44,core/extras
+Catalyst,52,57,0,2,
+openmpi,52,124,3,60,framework
+emacs,51,79,64,12,project name
+gap-pkg,51,53,53,0,package prefix
+mpich,50,122,3,58,framework
+xfce4,50,56,55,0,environment
+lib,50,74,0,48,file-type
+fedora,49,74,47,15,vendor
+trytond,49,53,52,0,project name
+php-pecl,48,57,57,0,package prefix
+HTTP,48,55,0,7,
+aspell,46,47,44,2,project name
+util,44,68,0,27,file-purpose
+filesystem,43,46,0,42,file-type
+web,43,65,3,35,file-purpose
+xorg-x11,41,75,75,0,project name
+stream,40,41,2,28,concept
+manager,40,64,0,27,file-purpose
+apache-commons,39,92,92,0,project name
+mate,38,67,45,22,environment
+cache,38,58,0,35,file-purpose
+octave,37,39,34,3,programming language
+xml,37,62,16,22,data format
+tcl,37,55,32,20,programming language
+ldap,36,47,0,32,protocol
+file,36,49,4,21,concept
+glib,36,81,3,37,framework
+postgresql,35,59,25,28,framework
+demo,35,38,0,36,file-purpose
+el,35,42,0,34,data format
+system,34,88,24,7,concept
+console,34,41,4,21,file-purpose
+google,33,70,37,2,vendor
+mono,33,68,40,2,programming language
+jenkins,33,70,64,3,project name
+vim,33,106,93,10,project name
+gnome-shell,33,46,44,1,project name
+Tiny,32,32,0,32,
+extra,32,58,1,29,core/extras
+XS,31,33,0,29,
+gtk3,31,53,5,26,framework
+backgrounds,30,184,0,29,file-type
+sqlite,30,44,7,29,framework
+selinux,30,36,7,29,framework
+gtk2,30,52,6,23,framework
+c,29,67,3,22,programming language
+ibus,29,65,63,0,framework
+agent,29,49,0,22,file-purpose
+glassfish,28,101,98,0,project name
+Parser,28,30,0,22,
+parser,28,48,0,30,file-purpose
+it,28,46,0,27,translation
+qt4,27,45,3,28,framework
+manual,27,27,0,26,file-purpose
+runtime,27,44,0,24,file-purpose
+log,26,37,0,21,file-purpose
+gimp,25,45,40,4,project name
+es,25,38,0,24,translation
+driver,25,84,0,21,extends/enhances
+sans,25,153,0,0,font-type
+plexus,25,53,51,2,project name
+plasma,25,56,48,2,framework
+extensions,24,31,0,25,extends/enhances
+fr,24,48,0,28,translation
+sharp,24,46,0,23,programming language
+de,24,45,0,24,translation
+info,23,30,0,20,file-type
+xfce,23,35,2,31,environment
+debug,22,60,0,44,build-variant
+daemon,22,59,0,23,file-purpose
+modules,22,33,0,27,extends/enhances
+ru,21,33,0,22,translation
+felix,21,40,40,0,project name
+cs,21,25,0,22,translation
+coin-or,21,61,61,0,project name
+jackson,21,51,47,1,project name
+glite,21,39,39,0,project name
+sblim,20,41,41,0,project name
+pgsql,20,24,0,23,framework
+i18n,20,70,0,21,translation
+firmware,19,40,2,34,file-type
+oslo,19,97,0,0,project name
+lxqt,18,34,34,0,environment
+libvirt,18,85,59,12,project name
+module,18,86,2,19,extends/enhances
+geronimo,17,35,35,0,project name
+springframework,15,50,49,0,project name
+nagios,15,82,74,3,project name
+bin,13,189,0,185,file-type
+NetworkManager,13,37,35,0,project name
+jetty,13,76,75,0,project name
+bridge,12,32,4,24,file-purpose
+qpid,10,76,59,3,project name
+yum,10,41,38,1,project name
+bundle,9,24,0,21,file-type
+gcc,9,94,73,5,project name
+langpacks,8,87,80,7,translation
+root,7,110,102,7,project name
+babel,6,126,1,9,
+pulp,6,47,34,0,project name
+aws-sdk,6,80,71,2,project name
+langpack,5,405,0,1,translation
+libreoffice,5,153,152,0,project name
+l10n,5,79,1,22,translation
+geany,5,44,41,0,project name
+boost,4,56,49,3,framework
+qemu,4,59,55,3,project name
+shrinkwrap,4,50,48,1,project name
+google-noto,3,146,146,0,project name
+fence,3,66,66,0,project name
+collectd,3,74,66,0,project name
+linux-gnu,3,92,0,91,build-variant
+glibc,2,201,200,0,project name
+asterisk,2,41,40,0,project name
+pcp,2,100,95,4,project name
+tesseract,2,114,107,2,project name
+pst,2,164,0,1,
+lodash,2,264,0,3,framework
+arquillian,2,49,38,0,project name
+uwsgi,1,98,96,1,project name
+gb,1,88,0,0,translation
+gcompris,1,42,41,0,project name
+fawkes,1,73,72,0,project name
+fusionforge,1,38,37,0,project name
+soletta,1,36,35,0,project name
+asterisk-sounds-core,1,90,90,0,project name
+gambas3,1,92,92,0,programming language
+gallery2,1,76,75,0,project name
+opensips,1,59,57,1,project name
+openrdf-sesame,1,74,74,0,project name
+texlive,1,5946,5928,0,project name
+vdsm,1,44,43,0,project name
+autocorr,1,33,33,0,project name
 {% endcapture %}
 {% include csvtable.html data=csvdata height="480px"
-   caption="Top 100 most common words/prefixes/suffixes in RPM names (F27, x86_64)" %}
+   caption="Top 100 most common words/prefixes/suffixes in RPMs and specfiles (F27, x86_64)" %}
 (full data set: [rpm-name-word-counts.csv])
 
-Looking over this list, I'd say there's 5 main things we're trying to do with
-all our RPM name-mangling:
+Looking over this list, I'd say there's 4 main features that we're trying to
+hack into RPM with all our name-mangling: namespaces, variant builds,
+new package relationships & metadata, and extended file-level metadata.
 
 ### 1. Language/project/vendor namespace prefixes
 
 As a wise man once observed, "Namespaces are one honking great idea --
-let's do more of those!"[^4] Sure enough, the 10 most common prefixes are
-language or project names. But RPM doesn't actually _have_ separate namespaces
-for any of those things, so in reality every package gets crammed into one big
-heap and the user has to figure out the rest.
+let's do more of those!"[^5] Sure enough, the 10 most common prefixes are
+our ad-hoc namespace markers for modules repackaged from the native packaging
+systems of some popular programming languages: `perl`, `python`, `nodejs`,
+`rubygem`, `ghc`, `golang`, and `php`. Oh, and `texlive`, which is kind of a
+packaging system but also a 220,000-line `rpmbuild` stress test[^6].
 
-So even if you've never used `texlive` or `nodejs` you're still downloading
-and searching all the metadata for every package in those ecosystems every
-time you run `dnf`. Yuck.
+Anyway, RPM doesn't _actually_ have a way to create separate namespaces for
+things like that, so in reality every package gets crammed into one big heap
+and the user gets to figure out the rest - which is why "github" now shows up
+as the 15th most common word overall (thanks, golang!)
 
-Also.. `python2` and `python3` are pulling double duty. They're _kinda_
-language prefixes, but they're _also_ variant-build markers!
+This also means that regardless of whether or not it uses `texlive` or Node.js or
+Ruby or Haskell or whatever, every Fedora system in the world still downloads
+complete metadata for all 10,000+ of those packages every time it runs DNF.
+Yikes.
 
-Interesting note: when a language or project name is used in a _suffix_, it
-has a slightly different meaning - usually "bindings for LANG" or "built
-with/for PROJ".
+One other note: `python2` and `python3` are actually pulling double duty.
+They're _kinda_ language prefixes, but they're _also_ variant-build markers!
 
 ### 2. Parallel-installable variant builds
 
@@ -351,26 +366,42 @@ There's a lot of times that we want multiple variant builds of a project to be
 available and/or parallel-installable, but we can't do that without modifying
 the RPM name.
 
-Most commonly, we want to build the same source more than once, using a
-different toolchain or build options. Since RPM doesn't know anything about
-the build environment or build options we have to change the name to make RPM
-consider them different builds - and that's where we get `-debug`, `-static`,
-`python2-`/`python3-`, `-qt4`/`-qt5`, `mingw64-`/`mingw32-`, and so on.
+Most commonly, we want to build the same source tarball more than once, using
+a different toolchain or build options. Since RPM doesn't care about the build
+environment or build options when comparing packages, we have to change the
+name to make RPM consider them different builds - and that's where we get
+`-debug`, `-static`, `python2-`/`python3-`, `-qt4`/`-qt5`,
+`mingw64-`/`mingw32-`, and so on.
 
-Other times we're building two _versions_ of the same package, because some
-things require the older version and some require the newer one. RPM
-technically allows this (as long as the package _contents_ don't overlap) but
-the default behavior (as enforced by yum and dnf) is to _replace_ older
-versions of packages with newer ones. So we add `-compat` or `compat-` to the
+Other times we're building two different _versions_ of the same sources -
+usually the newest one and an older one that's required by some other package.
+RPM technically allows you to install multiple versions of the same package
+(as long as the package contents don't overlap) _but_ the default behavior (as
+enforced by yum and dnf) is to _replace_ older versions of packages with newer
+ones. So rather than dealing with that, we add `-compat` or `compat-` to the
 older version to change its name, thus making RPM consider it a different
 package.
 
-### 3. Informal "extends/enhances"
+Interestingly, it seems like we're not consistent in whether variant markers
+are prefixes (like `python2-` and `mingw64-`) or suffixes (like `-debug` or
+`-static`). Which isn't surprising - we're using these words in ways that are
+human-meaningful, not machine-parseable, so naturally we use them in ways that
+mirror human language.
 
-Sure, we have soft dependencies now, but we still use a lot of unwritten
-conventions that _imply_ relationships between projects. One interesting
-example is the use of `plugin`/`plugins` - there's different "phrasings" that
-can have slightly different meanings:
+In fact, as we see with `python` and friends: when a programming language name
+is used as a _suffix_, it typically has a different meaning: `python-foo` is
+probably "foo" (written in Python), but `foo-python` is probably Python
+bindings to "foo". We're using the package name to provide (informal)
+information about the relationship between two packages.
+
+It turns out we do a lot of this!
+
+### 3. New package relationships & metadata
+
+Sure, we have soft dependencies _now_, but we still use a lot of unwritten
+conventions that _imply_ certain relationships between projects. One
+interesting example is the use of `plugin`/`plugins` - there's different
+"phrasings" that can have slightly different meanings:
 
 * _PROJ-plugin-NAME_: A plugin for _PROJ_ named _NAME_ -
   `yum-plugin-versionlock`, `gedit-plugin-commander`, `uwsgi-plugin-zergpool`
@@ -388,11 +419,23 @@ purpose of the plugin, sometimes the THING is a concept or protocol, like
 have! But instead we can only pick one of those pieces of data, and then we
 encode it into the RPM name in a way that's _not machine-readable_.
 
-### 4. File type/purpose tags
+Another example is `FRAMEWORK-LANG`: this usually means that this is the
+package you want to install if you want to use FRAMEWORK in LANG.
 
-We sure do love labeling things.
+Wouldn't it be nice if these relationships were a) formalized, and b) _not
+crammed into the package name_?
+
+**TODO: other relationships, other metadata**
+
+**TODO: talk about file-purpose here or in the file-level section?**
+
+### 4. File-level metadata
 
 **TODO IMPROVE**
+
+We sure do love labeling things! Look at all those "file-type" and
+"file-purpose" tags! 
+
 
 It's pretty good that we label docs as such, but it's kind of a shame that
 we have like 7 different tags for that: `doc`, `docs`, `javadoc`, `help`...
@@ -410,11 +453,14 @@ that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
 
 **TODO DOUBLECHECK / IMPROVE**
 
-1. Users want to be able to define their own file-level metadata tags
-1. We want soft/optional dependencies
 1. We should have namespaces for other packaging systems
-1. The build environment/target is a significant piece of data about a build
-1. `texlive` is _fucked up_
+1. The build environment, build options, and target are also significant pieces of data about a build
+1. We want more data (and conventions!) for what packages "do" and how they
+   relate to each other
+1. Users want to be able to define their own file-level metadata tags
+
+**TODO figure out how to tie this to next topic - data & metadata storage?**
+**XXX DO I NEED TO DO THE BUILD ALGEBRA FIRST OR WHAT**
 
 * * * * * *
 
@@ -427,7 +473,20 @@ that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
 [^3]: Technically it only cares about package `Provides` but talking about how
       `Provides`/`Requires`/etc. work is gonna be a much, much longer post.
 
-[^4]: `python -c 'import this'`, also known as [PEP20]
+[^4]: The "per-specfile" count is: "how many _source packages_ generate a
+      subpackage with this word in it?" Two reasons for this: first, it cuts
+      down on noise from packages like `texlive` or `pmda` that generate
+      hundreds (or thousands!) of subpackages. More importantly, it's a better
+      proxy for the real question, which is: what are the _users_ doing? What
+      words do _packagers_ use most commonly when describing the stuff that
+      gets built?
+
+[^5]: `python -c 'import this'`, also known as [PEP20]
+
+[^6]: Here's a link to [texlive's RPM sources] if you're curious.
+      Fun fact: each changelog entry is repeated across all subpackages, which
+      means that about 160MB of the 2.5GB(!) of RPMs produced by each new texlive
+      build is just 5,931 copies of the new changelog. That's.. good, right?
 
 [Jakarta]: http://jakarta.apache.org/
 [Apache Commons]: http://commons.apache.org/
@@ -441,3 +500,4 @@ that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
 [little script]: https://github.com/wgwoods/rpmtoys/blob/master/dnf-count-rpm-words.py
 [rpm-name-word-counts.csv]: /assets/csv/rpm-name-word-counts.csv
 [PEP20]: https://www.python.org/dev/peps/pep-0020/
+[texlive's RPM sources]: https://src.fedoraproject.org/cgit/rpms/texlive.git/tree/?h=f27

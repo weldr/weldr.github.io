@@ -398,10 +398,10 @@ It turns out we do a lot of this!
 
 ### 3. New package relationships & metadata
 
-Sure, we have soft dependencies _now_, but we still use a lot of unwritten
+Sure, we have soft dependencies now, but we still use a lot of unwritten
 conventions that _imply_ certain relationships between projects. One
-interesting example is the use of `plugin`/`plugins` - there's different
-"phrasings" that can have slightly different meanings:
+interesting example is the different ways we use `plugin`/`plugins` - there's
+different "phrasings" that can have slightly different meanings:
 
 * _PROJ-plugin-NAME_: A plugin for _PROJ_ named _NAME_ -
   `yum-plugin-versionlock`, `gedit-plugin-commander`, `uwsgi-plugin-zergpool`
@@ -417,50 +417,100 @@ purpose of the plugin, sometimes the THING is a concept or protocol, like
 `ldap`, and sometimes it's a specific piece of software, like `git` or
 `stapler`. These would all be useful pieces of data for packaging software to
 have! But instead we can only pick one of those pieces of data, and then we
-encode it into the RPM name in a way that's _not machine-readable_.
+encode it into the RPM name in a way that's _not machine-readable_. Wouldn't
+it be nice if these relationships were formalized, and also maybe we could
+store that metadata somewhere other than the package name?
 
-Another example is `FRAMEWORK-LANG`: this usually means that this is the
-package you want to install if you want to use FRAMEWORK in LANG.
+You could argue that the informal metadata provided by `plugin`/`plugins`
+could be formalized using the `Enhances:` or `Supplements:` RPM tags, but
+there's plenty of other examples where we're using naming conventions to
+establish similar informal relationships between packages and higher-level
+concepts, like projects or languages - or basic concepts like `web` and `gui`.
 
-Wouldn't it be nice if these relationships were a) formalized, and b) _not
-crammed into the package name_?
+I think this is one of the fundamental shortcomings of RPM's dependency
+system: the only thing it lets you express easily is whether a given package
+_requires_ another package[^7] when installed[^8]. It has no inherent concept
+of anything other than a package, or of different sub-parts of a package, or
+of any purpose for those parts other than installation.
 
-**TODO: other relationships, other metadata**
+And that's what we use subpackages for!
 
-**TODO: talk about file-purpose here or in the file-level section?**
+### 4. File-level metadata / tags and purposes
 
-### 4. File-level metadata
+So! If we want to talk about something other than the entire build output, we
+have to divide it into subpackages. If we need to talk to RPM about one
+specific file, we have to put it into its own subpackage[^9].
 
-**TODO IMPROVE**
+When we break a build into subpackages, we're usually doing it because part of
+the build is "optional" - that is, it's not required for the default assumed
+"purpose", which is basically "runtime".
 
-We sure do love labeling things! Look at all those "file-type" and
-"file-purpose" tags! 
+So to differentiate these "optional" parts from the "main" part, we once again
+turn to.. RPM name mangling!
 
+Sometimes - most commonly - we mark the parts by what _type_ of file they are:
+`-devel`, `-doc`, `-javadoc`, `-help`. Or we mark the _purpose_ of those
+files: `-tools`, `-utils`, `-unit-test`.
 
-It's pretty good that we label docs as such, but it's kind of a shame that
-we have like 7 different tags for that: `doc`, `docs`, `javadoc`, `help`...
+Now, _most_ systems probably don't need unit tests installed. But what about
+documentation and help files? Or development headers? Alas, since RPM has no
+concept of file types or purposes, we have no way to tell it what kind of
+parts we might want - and so we have to manually install `-doc` and `-help`
+and `-devel` packages, or any other "optional" pieces.
 
-Also, it's a shame we can't apply multiple "tags" to files. If you've got some
-example code in your docs, does that go in `examples` or `docs`?
+And since this is all informal, it's pretty inconsistent. If something has
+optional CLI tools, how do you find them? Is it under `-cli`, or `-console`,
+or `-tools`, or `-utils`, or `-extras`? Is an optional GUI tool written in GTK3
+found under `-gtk` or `-gtk3` or `-gui`?
 
-Also things like `tools`, `utils`, `unit-test`, etc.
+We've also got various competing traditions for splitting up packages like
+`git` or `vim` or `libreoffice` that have a bunch of optional parts with some
+shared common code, but a typical "default" set of things that most people
+want:
 
-Again: it's a good idea, but inconsistent: if you've got an optional CLI, is
-that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
-`-gtk` or `-gtk3` or `-gui`? Or `-tools`? Or maybe just.. `-extra`!
+* LibreOffice: The `libreoffice` package itself is empty, but it `Requires`
+  the standard suite set of apps: `-calc`, `-draw`, `-impress`, `-writer`, and
+  `-base`, which _isn't_ the "base" set of apps or libraries - it's a database
+  frontend (ha ha!). They all depend on `libreoffice-core`, which has all the
+  core libraries and tools and such.
+* Git: The `git` package only contains a few commonly-used utilities - `git
+  submodule`, `git am`, `git instaweb`, and a couple others. `git-core` is the
+  "minimal" core (which has everything else); other tools are in other `git-`
+  packages.
+* vim: There is no default `vim` package, but you can pick `vim-minimal` or
+  `vim-enhanced`, which both require `vim-common` and `vim-filesystem`.
+
+It's all kind of a mess, and you kind of just have to guess which pieces might
+be useful or relevant to you - would you be able to guess from the package
+names alone that `gitk` and `gitg` are git GUIs, and while `gitweb` _is_ a web
+frontend, there's already a web frontend (`git instaweb`) in the `git` package
+itself?
 
 ## So what have we learned?
 
-**TODO DOUBLECHECK / IMPROVE**
+I think looking at all the weird stuff we're doing with RPM names shows us a
+few things that our ideal software packaging ecosystem should handle:
 
-1. We should have namespaces for other packaging systems
-1. The build environment, build options, and target are also significant pieces of data about a build
-1. We want more data (and conventions!) for what packages "do" and how they
-   relate to each other
-1. Users want to be able to define their own file-level metadata tags
+1. External packaging/module systems should probably have their own namespaces
+2. The build environment, build options, and build target are relevant pieces
+   of metadata about a build, and should be part of its identity
+3. Packages should be able to declare different kinds of relationships between
+   each other - formal and informal
+4. There are a lot of relationships other than "required to install/run" that
+   people might want to know about
+5. It's enormously helpful to be able to provide metadata at the level of
+   individual files
+7. It's also helpful if you can apply multiple tags to the same thing
+6. Using common type/purpose tags is a great idea, but users should definitely
+   be able to define new tags when needed
 
-**TODO figure out how to tie this to next topic - data & metadata storage?**
-**XXX DO I NEED TO DO THE BUILD ALGEBRA FIRST OR WHAT**
+You can probably see a theme here: more flexible metadata, and more of it!
+But how do we do that without overloading or breaking the stuff we already
+have? Well, to answer that question, I think we need to take a closer look at
+the metadata RPM and DNF already use, and how exactly it's stored and used.
+
+So, coming soon: join me as I dig deep into the horrors of the RPM header
+format itself! And bring a stiff drink, 'cuz we're both gonna need it.
 
 * * * * * *
 
@@ -470,8 +520,8 @@ that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
 [^2]: Except FC3, mostly because we renamed all the `xorg-x11-XXX-fonts`
       packages to `fonts-xorg-XXX`.
 
-[^3]: Technically it only cares about package `Provides` but talking about how
-      `Provides`/`Requires`/etc. work is gonna be a much, much longer post.
+[^3]: Technically it only cares about package `Provides` - see David's
+      excellent [RPM Dependencies] post if you want to know more.
 
 [^4]: The "per-specfile" count is: "how many _source packages_ generate a
       subpackage with this word in it?" Two reasons for this: first, it cuts
@@ -488,6 +538,18 @@ that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
       means that about 160MB of the 2.5GB(!) of RPMs produced by each new texlive
       build is just 5,931 copies of the new changelog. That's.. good, right?
 
+[^7]: Again, while technically RPM lets you do `Requires: <FILENAME>`, that
+      just resolves to "whichever package(s) provide `<FILENAME>`".
+      You'll still get the whole package installed, even if you literally only
+      require that one file.
+
+[^8]: Okay, it also has `BuildRequires:`, because `rpmbuild` has to care about
+      _building_ packages so that `rpm` can install them. But that's it!
+
+[^9]: There are currently 1,348 packages in F27 that contain exactly one file.
+      Fun fact: the package payload is smaller than the RPM headers for about
+      2/3 of those (838/1348).
+
 [Jakarta]: http://jakarta.apache.org/
 [Apache Commons]: http://commons.apache.org/
 [CPAN]: https://www.cpan.org/
@@ -496,8 +558,9 @@ that `-cli` or `-console`? Is an optional GUI tool written in GTK3 found under
 [gnome-shell]: https://en.wikipedia.org/wiki/GNOME_Shell
 [Gnome Shell Extensions]: https://extensions.gnome.org/
 [merged Core and Extras]: https://www.redhat.com/archives/fedora-devel-list/2007-January/msg00091.html
-[the intro]: /Unpacking-RPM-intro
+[the intro]: {% post_url 2018-03-15-Unpacking-RPM-intro %}
 [little script]: https://github.com/wgwoods/rpmtoys/blob/master/dnf-count-rpm-words.py
 [rpm-name-word-counts.csv]: /assets/csv/rpm-name-word-counts.csv
 [PEP20]: https://www.python.org/dev/peps/pep-0020/
 [texlive's RPM sources]: https://src.fedoraproject.org/cgit/rpms/texlive.git/tree/?h=f27
+[RPM dependencies]: {% post_url 2018-03-29-RPM-Dependencies %}

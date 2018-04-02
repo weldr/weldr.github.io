@@ -102,7 +102,7 @@ the existing tools. And we're just getting started.
 
 ----------------
 
-Coming next: RPM package names!
+Next post: [RPM package names]!
 
 [RPM scriptlets]: https://www.youtube.com/watch?v=kE-8ZRISFqA#t=2m33
 [up2date]: https://en.wikipedia.org/wiki/Up2date
@@ -138,3 +138,4 @@ Coming next: RPM package names!
 [problems we've been having with Modularity]: https://www.phoronix.com/scan.php?page=news_item&px=Fedora-27-Server-Classic
 [32-hour "nightly" composes]: https://bugzilla.redhat.com/show_bug.cgi?id=1551653
 [texlive]: https://src.fedoraproject.org/rpms/texlive/blob/master/f/tl2rpm.c
+[RPM package names]: {% post_url 2018-04-02-Unpacking-RPM-names %}

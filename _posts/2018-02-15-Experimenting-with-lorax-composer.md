@@ -2,6 +2,7 @@
 layout: post
 title: Experimenting with Lorax Composer
 author: bcl
+tags: lorax-composer ansible
 ---
 
 In my [previous post about Lorax Composer]({% post_url

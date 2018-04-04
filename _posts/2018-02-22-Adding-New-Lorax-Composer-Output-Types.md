@@ -2,6 +2,7 @@
 layout: post
 title: Adding New Lorax Composer Output Types
 author: bcl
+tags: lorax-composer
 ---
 
 When [lorax-composer version

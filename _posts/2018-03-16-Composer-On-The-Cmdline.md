@@ -2,6 +2,7 @@
 layout: post
 title: Composer on the Cmdline
 author: bcl
+tags: lorax-composer
 ---
 
 lorax-composer now has a command line tool, it is called `composer-cli`, and it

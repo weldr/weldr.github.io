@@ -2,6 +2,7 @@
 layout: post
 title: Deploying Welder Web with Lorax Composer and Docker
 author: bcl
+tags: lorax-composer docker
 ---
 
 The Weldr project is made up of several components. This can make it difficult

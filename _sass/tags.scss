@@ -1,0 +1,88 @@
+@import "rouge-base16-dark";
+@import "default_colors";
+
+$body-background: $cod-grey !default;
+$link-foreground: #63c0f5 !default;
+$header: $conifer !default;
+$tag-background: $link-foreground;
+$tag-foreground: $body-background;
+$tag-hover-bg: $gallery;
+$tag-hover-fg: $tag-foreground;
+
+// Tag styles from "CSS tags" by Wouter Beeftink:
+//   https://codepen.io/wbeeftink/pen/dIaDH
+
+// Tag container
+.tags {
+    margin: 0 0 20px;
+    overflow: hidden;
+    padding: 0;
+}
+.tags li {
+    float: left;
+    list-style: none;
+}
+
+// Make tag items look tag-ish
+.tag {
+    background: $tag-background;
+    color: $tag-foreground;
+    display: inline-block;
+    padding: 0 13px 0 16px;
+    margin: 6px;
+    height: 26px;
+    line-height: 26px;
+    text-decoration: none;
+    position: relative;
+}
+.tag::after, .tag::before {
+    background: $body-background;
+    content: '';
+    position: absolute;
+}
+.tag::before {
+    border-radius: 10px;
+    height: 6px;
+    width: 6px;
+    left: 6px;
+    top: 10px;
+}
+.tag::after {
+    border-bottom: 13px solid transparent;
+    border-left: 10px solid $tag-background;
+    border-top: 13px solid transparent;
+    right: 0;
+    top: 0;
+}
+// Change tag colors on hover
+.tag:hover {
+    background: $tag-hover-bg;
+    color: $tag-hover-fg;
+}
+.tag:hover::after {
+    border-left-color: $tag-hover-bg;
+}
+.tag:hover::before {
+    background: $tag-hover-fg;
+}
+
+// make post lists in tags.html look like ls output
+table.ls-posts {
+    width: auto;
+    border-spacing: 0;
+    line-height: 1.4;
+    white-space: pre;
+    margin: 0 0 20px;
+}
+table.ls-posts td {
+    padding: 0 1ex;
+}
+table.ls-posts caption {
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: $conifer;
+}
+
+// mark the "target" item, e.g. which tag was clicked
+:target { text-decoration: underline; }

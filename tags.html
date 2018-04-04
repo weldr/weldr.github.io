@@ -1,0 +1,33 @@
+---
+layout: default
+---
+{% capture taglist %}
+{% for t in site.tags %}{{ t[0] }},{% endfor %}
+{% endcapture %}
+{% assign sortedtags = taglist | strip | split: ',' | sort_natural %}
+
+<h1>$ ls -d tags/</h1>
+<ul class="tags">
+  {% for t in sortedtags %}
+  <li><a class="tag" href="#{{t}}">{{t}} ({{site.tags[t].size}})</a></li>
+  {% endfor %}
+</ul>
+<hr>
+<h1>$ ls -ltR tags/</h1>
+{% for t in sortedtags %}
+  {% assign posts = site.tags[t] | sort: 'date' | reverse %}
+  <table class="ls-posts">
+  <caption id="{{ t }}">{{ t }}:</caption>
+  {% for post in posts %}
+  <tr>
+    <td>-rw-r--r--</td>
+    <td>1</td>
+    <td>{{post.author}}</td>
+    <td>{{post.author}}</td>
+    <td>{{post.content | number_of_words}}</td>
+    <td>{{post.date | date_to_string}}</td>
+    <td><a href="{{ post.url }}">{{ post.title }}</a></td>
+  </tr>
+  {% endfor %}
+  </table>
+{% endfor %}

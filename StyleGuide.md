@@ -12,6 +12,19 @@ See README.md as well, but here's the quick version:
 
 ...then just open http://localhost:4000/ and you're off.
 
+### Drafts
+
+You can add draft posts under `_drafts/` without a date prefix, like:
+
+    _drafts/Now-Thats-What-I-Call-Blogging.md
+
+Drafts won't get shown unless you run jekyll with `--drafts`:
+
+    bundle exec jekyll serve --drafts
+
+This is helpful for sharing posts with the team before publishing them _and_
+making sure you don't accidentally delete/lose your post before it's finished.
+
 ## Author info
 
 Add a page for yourself in `_authors/`, like so:
@@ -34,3 +47,15 @@ wrote the post.
 
 (Be sure to include the `github` username, because we might grab the github
 user avatar to use an avatar for you on the page.)
+
+## Categories, tags, and fedoraplanet.org
+
+We currently aren't using categories for anything, so don't bother.
+
+Go ahead and add tags - everyone loves metadata, right? They'll show up in the
+footer of your post, and each tag links to the tag summary page (/tags/),
+which shows a list of all known tags and a list of posts for each tag.
+
+If you use the tag "fedoraplanet", it'll show up on http://fedoraplanet.org/
+so people in the Fedora community can see it. If you don't want that.. don't
+do that.

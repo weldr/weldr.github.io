@@ -1,7 +1,10 @@
 ---
+
 layout: post
 title: "Unpacking RPM: an introduction"
 author: wwoods
+tags: unpacking-rpm rpm fedora
+
 ---
 
 (tl;dr version: let's start mapping out the RPM ecosystem as a whole - from

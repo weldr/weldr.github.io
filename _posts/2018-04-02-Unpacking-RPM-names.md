@@ -3,6 +3,7 @@
 layout: post
 title: "Unpacking RPM: package names"
 author: wwoods
+tags: rpm fedora packaging unpacking-rpm
 
 ---
 Have you ever noticed that Fedora keeps getting bigger and package names keep

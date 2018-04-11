@@ -49,18 +49,27 @@ it after rebooting.
 
 ## Use Ansible to Setup the VM
 
-Install [ansible](https://www.ansible.com) on a system with access to the VM
-(the VM host is a good choice for this). If you are running a rpm based
-distribution `yum install -y ansible` should be sufficient.
+Install [ansible](https://www.ansible.com) outside the VM, eg. on the VM host.
+If you are running a rpm based distribution `yum install -y ansible` should be
+sufficient. If you are using a Mac with brew `brew install ansible`,
+or `pip install ansible` should work.
 
 We will be using an ansible playbook to do all the hard work of installing
 lorax-composer into the VM. The playbook and example recipes can be [found in
-this github repository](https://github.com/weldr/ansible-centos7-composer).
-Clone this with git and after your VM has rebooted figure out its IP address by
-logging into its console and looking at the output of `ip a` or running `virsh
-domifaddr <vm-name>` on the host system.
+this github repository](https://github.com/weldr/ansible-centos7-composer). On
+your VM host (not inside the VM), run:
 
-Make sure you can ssh into the VM as root, and then run the [install-composer.yml](https://github.com/weldr/ansible-centos7-composer/blob/master/install-composer.yml) playbook:
+    git clone https://github.com/weldr/ansible-centos7-composer
+    cd ./ansible-centos7-composer
+
+After your VM has rebooted figure out its IP address by
+logging into its console and looking at the output of `ip a` or running `virsh
+domifaddr <vm-name>` on the host system. Make sure you can ssh into the VM as
+root, using password or key authentication.
+
+From inside the ansible-centos7-composer directory On your VM host run the
+[install-composer.yml](https://github.com/weldr/ansible-centos7-composer/blob/master/install-composer.yml)
+playbook:
 
     ansible-playbook --ssh-extra-args "-o CheckHostIP=no -o StrictHostKeyChecking=no" -k -i <ip-of-the-vm>, install-composer.yml
 

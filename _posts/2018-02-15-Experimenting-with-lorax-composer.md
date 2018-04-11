@@ -67,7 +67,7 @@ logging into its console and looking at the output of `ip a` or running `virsh
 domifaddr <vm-name>` on the host system. Make sure you can ssh into the VM as
 root, using password or key authentication.
 
-From inside the ansible-centos7-composer directory On your VM host run the
+From inside the ansible-centos7-composer directory on your VM host run the
 [install-composer.yml](https://github.com/weldr/ansible-centos7-composer/blob/master/install-composer.yml)
 playbook:
 

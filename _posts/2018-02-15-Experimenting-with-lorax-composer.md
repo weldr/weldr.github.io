@@ -65,13 +65,14 @@ your VM host (not inside the VM), run:
 After your VM has rebooted figure out its IP address by
 logging into its console and looking at the output of `ip a` or running `virsh
 domifaddr <vm-name>` on the host system. Make sure you can ssh into the VM as
-root, using password or key authentication.
+root, using password or key authentication. Use this IP in the playbook command
+below, substituting it for `<IP-OF-THE-VM>`.
 
 From inside the ansible-centos7-composer directory on your VM host run the
 [install-composer.yml](https://github.com/weldr/ansible-centos7-composer/blob/master/install-composer.yml)
 playbook:
 
-    ansible-playbook --ssh-extra-args "-o CheckHostIP=no -o StrictHostKeyChecking=no" -k -i <ip-of-the-vm>, install-composer.yml
+    ansible-playbook --ssh-extra-args "-o CheckHostIP=no -o StrictHostKeyChecking=no" -k -i <IP-OF-THE-VM>, install-composer.yml
 
 If you are using ssh-key access to the VM you don't need the `-k`, just make sure
 to ssh-add the key to your local ssh-agent first.

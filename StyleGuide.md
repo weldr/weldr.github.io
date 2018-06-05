@@ -2,6 +2,20 @@
 
 Notes for weldrists writing for weldr.io.
 
+## Testing locally using containers
+
+This will build a container, install the needed fedora packages and mount the current directory as
+your user id (so that you can edit from within the container without making everything owned by root).
+
+    sudo docker build -t weldr/jekyll .
+    sudo docker run -it --name=jekyll --security-opt="label=disable" -v "$PWD:/weldr.io/" --env LOCAL_UID=`id -u` -p 4000:4000 weldr/jekyll /usr/bin/bash
+    bundle install --binstubs=/tmp/bin/
+    bundle exec /tmp/bin/jekyll serve --host=0.0.0.0 --incremental
+
+...then just open http://localhost:4000/ and you're off. On subsequent runs you can reuse the container with:
+
+    sudo docker start -i jekyll
+
 ## Testing locally
 
 See README.md as well, but here's the quick version:

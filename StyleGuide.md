@@ -9,7 +9,7 @@ your user id (so that you can edit from within the container without making ever
 
     sudo docker build -t weldr/jekyll .
     sudo docker run -it --name=jekyll --security-opt="label=disable" -v "$PWD:/weldr.io/" --env LOCAL_UID=`id -u` -p 4000:4000 weldr/jekyll /usr/bin/bash
-    bundle install --binstubs=/tmp/bin/
+    bundle install --binstubs=/tmp/bin/ --deployment
     bundle exec /tmp/bin/jekyll serve --host=0.0.0.0 --incremental
 
 ...then just open http://localhost:4000/ and you're off. On subsequent runs you can reuse the container with:

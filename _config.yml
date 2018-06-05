@@ -89,5 +89,6 @@ exclude:
   - README.md
   - CNAME
   - StyleGuide.md
+  - vendor
 
 theme: jekyll-theme-hacker

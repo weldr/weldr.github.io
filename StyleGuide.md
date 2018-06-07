@@ -8,13 +8,21 @@ This will build a container, install the needed fedora packages and mount the cu
 your user id (so that you can edit from within the container without making everything owned by root).
 
     sudo docker build -t weldr/jekyll .
-    sudo docker run -it --name=jekyll --security-opt="label=disable" -v "$PWD:/weldr.io/" --env LOCAL_UID=`id -u` -p 4000:4000 weldr/jekyll /usr/bin/bash
-    bundle install --binstubs=/tmp/bin/ --deployment
-    bundle exec /tmp/bin/jekyll serve --host=0.0.0.0 --incremental
+    sudo docker run -it --name=jekyll \
+        --security-opt="label=disable" \
+        -v "$PWD:/weldr.io/" \
+        --env LOCAL_UID=`id -u` \
+        -p 4000:4000 weldr/jekyll \
+        jekyll serve --host=0.0.0.0 --incremental
 
 ...then just open http://localhost:4000/ and you're off. On subsequent runs you can reuse the container with:
 
     sudo docker start -i jekyll
+
+If you need to regenerate the Gemfile.lock file, you can do so with the following:
+
+    sudo docker run --rm -v "$PWD:/usr/src/app" -w /usr/src/app ruby:2.4 bundle install
+    sudo chown `id -u`:`id -g` Gemfile.lock
 
 ## Testing locally
 

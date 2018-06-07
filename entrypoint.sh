@@ -11,8 +11,8 @@ if [ "$USERNAME" == "root" ]; then
     exec "$@"
 else
     echo "Running with $USERNAME:$USER_ID"
-    useradd -u "$USER_ID" -G wheel -m "$USERNAME"
+    useradd -u "$USER_ID" -m "$USERNAME"
     # Remove user password, allows sudo use
     passwd -d "$USERNAME"
-    exec sudo -u "$USERNAME" "$@"
+    exec runuser -u "$USERNAME" -- "$@"
 fi
